@@ -19,18 +19,6 @@ pandas
 
 see `requirements.txt`
 
-# Download toy data
-
-```
-python data/download.py
-```
-
-# Train model with toy data
-
-```
-python bin/train.py
-```
-
 # Citation
 
 ```
