@@ -4,6 +4,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 
 from Bio import SeqIO
@@ -61,14 +62,14 @@ def onehot_to_seq(arr):
     return ''.join(np.array(['a', 'c', 'g', 't'])[indices])
 
 
-def extract_region(region, expected_length=131_072):
+def extract_region(region, seqs_per_chr, expected_length=131_072):
     if not str(region.chromosome).startswith("chr"):
         chromosome = f"chr{region.chromosome}"
     else:
         chromosome = region.chromosome
     start = int(region.start)
     end   = int(region.end)
-    sequence = mm10_per_chr[chromosome][start:end]
+    sequence = seqs_per_chr[chromosome][start:end]
 
     assert (len(sequence)) == expected_length, f"Difference between start and end is not {expected_length} but {len(sequence)}."
     return sequence

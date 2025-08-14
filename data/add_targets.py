@@ -27,7 +27,7 @@ TFR_FOLDER = MOUSE_TFR_FOLDER if SPECIES == "mouse" else HUMAN_TFR_FOLDER
 train_files, valid_files, test_files = get_tfr_files(tfr_folder=TFR_FOLDER)
 train_files = train_files + valid_files
 
-NUM_TARGETS = 1643 if SPECIES == 'mouse' else 5803
+NUM_TARGETS = 1643 if SPECIES == 'mouse' else 5313
 
 metadata = dict(seq_length=131072, target_length=896, num_targets=NUM_TARGETS )
 
