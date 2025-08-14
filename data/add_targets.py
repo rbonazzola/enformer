@@ -4,9 +4,7 @@ from pathlib import Path
 from tqdm import tqdm
 import gc
 
-import numpy as np
 import h5py
-import pandas as pd
 import tensorflow as tf
 
 from Bio import SeqIO

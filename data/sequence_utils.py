@@ -1,9 +1,11 @@
 import os, sys
-import tensorflow as tf
-from pathlib import Path
-import numpy as np
 import subprocess
+from pathlib import Path
 from tqdm import tqdm
+
+import numpy as np
+import tensorflow as tf
+
 from Bio import SeqIO
 
 repo_root = Path("..")
