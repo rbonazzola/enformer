@@ -9,8 +9,6 @@ from Bio import SeqIO
 repo_root = Path("..")
 os.chdir(repo_root)
 
-print(os.getcwd())
-
 HUMAN_REF_FOLDER = os.getenv("HUMAN_REF_FOLDER", "./data/datasets/ref/human")
 HUMAN_TFR_FOLDER = os.getenv("HUMAN_TFR_FOLDER", "./data/datasets/basenji/human")
 
@@ -104,8 +102,8 @@ def get_mm10():
     seqs_per_chr = { record.id: str(record.seq).lower() for record in tqdm(SeqIO.parse(genome_fasta, "fasta")) }
     return seqs_per_chr
     
-get_data_subset = lambda f: f.split('-')[0]   
-get_record_number = lambda f: int(f.split('-')[2])
+get_data_subset = lambda tfr_filename: tfr_filename.replace(".tfr", "").split('-')[0]   
+get_record_number = lambda tfr_filename: int(tfr_filename.replace(".tfr", "").split('-')[2])
 
 
 def get_human_record_ids():
