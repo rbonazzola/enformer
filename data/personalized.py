@@ -4,7 +4,7 @@
 # Date: Thurs Feb 2 2023
 
 import functools
-import loggerUtils
+import logger_utils
 
 from IPython import embed
 
@@ -119,7 +119,7 @@ def extract_reference_sequence(region, fasta_func=None, resize_for_enformer=True
         err_msg = f'[REGION ERROR] {region} input start or end is invalid.'
         if (write_log is not None) and (write_log['logtypes']['error']):
             MEMORY_ERROR_FILE = os.path.join(write_log['logdir'], 'error_details.log')
-            loggerUtils.write_logger(log_msg_type='error', logfile=MEMORY_ERROR_FILE, message=err_msg)
+            logger_utils.write_logger(log_msg_type='error', logfile=MEMORY_ERROR_FILE, message=err_msg)
         else:
             raise Exception(err_msg)
         return(None)
@@ -143,7 +143,7 @@ def extract_reference_sequence(region, fasta_func=None, resize_for_enformer=True
     if (write_log is not None) and (write_log['logtypes']['cache'] == True):
         msg_cac_log = f'[CACHE] (fasta) [{get_fastaExtractor.cache_info()} for {region}]'
         CACHE_LOG_FILE = os.path.join(write_log['logdir'], 'cache_usage.log')
-        loggerUtils.write_logger(log_msg_type='cache', logfile=CACHE_LOG_FILE, message=msg_cac_log)
+        logger_utils.write_logger(log_msg_type='cache', logfile=CACHE_LOG_FILE, message=msg_cac_log)
 
     return({
         'sequence': one_hot_encode(ref_sequences), 
@@ -366,7 +366,7 @@ def create_input_for_enformer(
 
     import numpy as np
     import cyvcf2
-    import loggerUtils
+    import logger_utils
     import os
     import time
 
@@ -390,7 +390,7 @@ def create_input_for_enformer(
             time_used = toc - tic
             TIME_USAGE_FILE = os.path.join(write_log['logdir'], 'time_usage.log')
             time_msg = f'[TIME] Time to create input sequence for {len(samples)}\'s {query_region} ==> {time_used}'
-            loggerUtils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
+            logger_utils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
         return({'sequence': {'haplotype0': one_hot_encode(generate_random_sequence_inputs())}, 'metadata': {'sequence_source':'random', 'region':query_region}})
     else:
         reference_sequence = extract_reference_sequence(
@@ -403,12 +403,12 @@ def create_input_for_enformer(
         #print(f'Region {region} sequences successfully created within create input function')
         if np.all(reference_sequence['sequence'] == 0.25): # check if all the sequence are "NNNNNNNNNNN..."
             error_folder = os.path.join(write_log['logdir'], 'invalid_queries.csv')
-            loggerUtils.log_error_sequences(error_folder=error_folder, what_to_write=[query_region, 'NNN* sequences'])
+            logger_utils.log_error_sequences(error_folder=error_folder, what_to_write=[query_region, 'NNN* sequences'])
 
             # err_msg = f'[INPUT] {query_region} is invalid; all nucleotides are N.'
             # if (write_log is not None) and (write_log['logtypes']['error']):
             #     MEMORY_ERROR_FILE = os.path.join(write_log['logdir'], 'error_details.log')
-            #     loggerUtils.write_logger(log_msg_type = 'error', logfile = MEMORY_ERROR_FILE, message = err_msg)
+            #     logger_utils.write_logger(log_msg_type = 'error', logfile = MEMORY_ERROR_FILE, message = err_msg)
             # else:
             #     print(err_msg)
             return(None)
@@ -419,7 +419,7 @@ def create_input_for_enformer(
                     time_used = toc - tic
                     TIME_USAGE_FILE = os.path.join(write_log['logdir'], 'time_usage.log')
                     time_msg = f'[TIME] Time to create input sequence for {len(samples)}\'s {query_region} ==> {time_used}'
-                    loggerUtils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
+                    logger_utils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
 
                 return({'sequence': {'haplotype0': reference_sequence['sequence']}, 'metadata': {'sequence_source':'ref', 'region':query_region}})
             elif sequence_source.startswith('personalized'):
@@ -463,7 +463,7 @@ def create_input_for_enformer(
                             time_used = toc - tic
                             TIME_USAGE_FILE = os.path.join(write_log['logdir'], 'time_usage.log')
                             time_msg = f'[TIME] Time to create input sequence for {len(samples)}\'s {query_region} ==> {time_used}'
-                            loggerUtils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
+                            logger_utils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
 
                         return({'sequence': samples_variants_encoded, 'metadata': {'sequence_source':'var', 'region':query_region}})
                         
@@ -471,7 +471,7 @@ def create_input_for_enformer(
                         err_msg = f'[ERROR] Fatal of type {type(ex).__name__} for {query_region}'
                         if (write_log is not None) and (write_log['logtypes']['error']):
                             MEMORY_ERROR_FILE = os.path.join(write_log['logdir'], 'error_details.log')
-                            loggerUtils.write_logger(log_msg_type = 'error', logfile = MEMORY_ERROR_FILE, message = err_msg)
+                            logger_utils.write_logger(log_msg_type = 'error', logfile = MEMORY_ERROR_FILE, message = err_msg)
                         else:
                             raise Exception(err_msg)
 
@@ -481,7 +481,7 @@ def create_input_for_enformer(
                             time_used = toc - tic
                             TIME_USAGE_FILE = os.path.join(write_log['logdir'], 'time_usage.log')
                             time_msg = f'[TIME] Time to create input sequence for {len(samples)}\'s {query_region} ==> {time_used}'
-                            loggerUtils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
+                            logger_utils.write_logger(log_msg_type = 'time', logfile = TIME_USAGE_FILE, message = time_msg)
                     
                     reference_sequence_encoded = {
                         'sequence':{
