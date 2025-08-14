@@ -181,3 +181,55 @@ def find_matches(genome_fasta, tfrecord_hashes, window_size=131072):
                 matches.append((chrom, i, i+window_size, h))
                 print(f"Match at {chrom}:{i}-{i+window_size}")
         return matches
+
+
+def get_tfr_files(tfr_folder):
+
+    train_files = [ tfr_folder / f"train-1-{i}.tfr" for i in range(200) ]
+    valid_files = [ tfr_folder / f"valid-1-{i}.tfr" for i in range(200) ]
+    test_files  = [ tfr_folder / f"test-1-{i}.tfr" for i in range(200) ]
+    train_files = [ f for f in train_files if os.path.exists(f) ]
+    valid_files = [ f for f in valid_files if os.path.exists(f) ]
+    test_files  = [ f for f in test_files  if os.path.exists(f) ]
+
+    return train_files, valid_files, test_files
+    
+
+def chunk_by_subset(regions_df, chunk_size=256):
+    result = {}
+
+    for subset in ["train", "valid", "test"]:
+        df_subset = regions_df[regions_df["subset"] == subset]
+        chunks = [df_subset.iloc[i:i+chunk_size] for i in range(0, len(df_subset), chunk_size)]
+        for i, chunk in enumerate(chunks):
+            name = f"{subset}-1-{i}"
+            result[name] = chunk
+
+    return result
+
+
+def get_hash_from_seq(seq):
+    return hashlib.sha256(seq.encode()).hexdigest()
+
+
+def find_matches(genome_fasta, tfrecord_hashes, window_size=131072):
+    for record in SeqIO.parse(genome_fasta, "fasta"):
+        chrom = record.id
+        seq = str(record.seq).upper()
+        matches = []
+        for i in range(len(seq) - window_size + 1):
+            subseq = seq[i:i+window_size]
+            h = get_hash_from_seq(subseq)
+            if h in tfrecord_hashes:
+                matches.append((chrom, i, i+window_size, h))
+                print(f"Match at {chrom}:{i}-{i+window_size}")
+        return matches
+
+
+def get_all_hashes():
+    hashes = [ open("sequence_hashes/"+x, "rt").readlines() for x in os.listdir("sequence_hashes") ]
+    return hashes
+
+
+def flatten_list(lst):
+    return[x for y in lst for x in y]

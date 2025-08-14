@@ -14,6 +14,7 @@ from Bio import SeqIO
 from sequence_utils import (
     deserialize,
     load_tfrecord_to_numpy,
+    get_tfr_files,
     MOUSE_TFR_FOLDER, MOUSE_REF_FOLDER,
     HUMAN_TFR_FOLDER, HUMAN_REF_FOLDER
 )
@@ -23,14 +24,9 @@ SPECIES = "mouse"
 
 assert SPECIES in ["mouse", "human"], f"SPECIES should be 'mouse' or 'human' but {SPECIES=}"
 
-TFR_FOLDER = MOUSE_TFR_FOLDER if SPECIES == "mouuse" else HUMAN_TFR_FOLDER
+TFR_FOLDER = MOUSE_TFR_FOLDER if SPECIES == "mouse" else HUMAN_TFR_FOLDER
 
-train_files = [ TFR_FOLDER / f"train-1-{i}.tfr" for i in range(200) ]
-valid_files = [ TFR_FOLDER / f"valid-1-{i}.tfr" for i in range(200) ]
-test_files  = [ TFR_FOLDER / f"test-1-{i}.tfr" for i in range(200) ]
-train_files = [ f for f in train_files if os.path.exists(f) ]
-valid_files = [ f for f in valid_files if os.path.exists(f) ]
-test_files  = [ f for f in test_files  if os.path.exists(f) ]
+train_files, valid_files, test_files = get_tfr_files(tfr_folder=TFR_FOLDER)
 train_files = train_files + valid_files
 
 NUM_TARGETS = 1643 if SPECIES == 'mouse' else 5803
